@@ -44,13 +44,13 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/linhnguy/data/wordpress
+      device: /home/${VOLUME_PATH}/data/wordpress
       o: bind
   mariadb_data:
     driver: local
     driver_opts:
       type: none
-      device: /home/linhnguy/data/wordpress
+      device: /home/${VOLUME_PATH}/data/mariadb
       o: bind
 
 networks:

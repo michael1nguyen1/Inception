@@ -1,15 +1,15 @@
 
-.PHONY: up down clean fclean re
+.PHONY: up down clean fclean re logs
 
 up:
 	mkdir -p /home/\$(shell whoami)/data/wordpress
 	mkdir -p /home/\$(shell whoami)/data/mariadb
 	chmod -R 777 /home/\$(shell whoami)/data/wordpress
 	chmod -R 777 /home/\$(shell whoami)/data/mariadb
-	docker-compose -f srcs/docker-compose.yml up -d --build
+	sudo docker-compose -f srcs/docker-compose.yml up -d --build
 
 down:
-	docker-compose -f srcs/docker-compose.yml down
+	sudo docker-compose -f srcs/docker-compose.yml down
 
 clean: down
 	docker system prune -a --force
@@ -22,4 +22,4 @@ fclean: clean
 re: fclean up
 
 logs:
-	docker-compose -f srcs/docker-compose.yml logs -f
+	sudo docker-compose -f srcs/docker-compose.yml logs -f

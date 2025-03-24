@@ -13,6 +13,26 @@ done
 echo "MariaDB is reachable. Waiting for initialization to complete..."
 sleep 15
 
+# Test connection to make sure it's actually working
+echo "Testing database connection..."
+attempts=0
+max_attempts=30
+
+while [ $attempts -lt $max_attempts ]; do
+    if mysql -h mariadb -u ${MYSQL_USER} -p${MYSQL_PASSWORD} -e "SELECT 1" >/dev/null 2>&1; then
+        echo "Successfully connected to database!"
+        break
+    fi
+    
+    attempts=$(expr $attempts + 1)
+    echo "Connection attempt $attempts/$max_attempts failed, retrying..."
+    sleep 3
+    
+    if [ $attempts -eq $max_attempts ]; then
+        echo "Could not connect to database after $max_attempts attempts. Continuing anyway..."
+    fi
+done
+
 echo "Setting up WordPress..."
 
 # Check if WordPress is already installed

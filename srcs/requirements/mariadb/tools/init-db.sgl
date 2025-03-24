@@ -5,5 +5,9 @@ CREATE DATABASE IF NOT EXISTS wordpress;
 CREATE USER IF NOT EXISTS 'wpuser'@'%' IDENTIFIED BY 'wppassword';
 GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'%';
 
+-- Allow root to connect from any host (needed for some setups)
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY 'rootpassword';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+
 -- Ensure changes take effect
 FLUSH PRIVILEGES;

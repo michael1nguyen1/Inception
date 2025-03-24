@@ -18,6 +18,9 @@ RUN apk update && apk add --no-cache \
     wget \
     mariadb-client
 
+# Create a symlink from php82 to php for wp-cli
+RUN ln -sf /usr/bin/php82 /usr/bin/php
+
 # Install wp-cli
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x wp-cli.phar && \

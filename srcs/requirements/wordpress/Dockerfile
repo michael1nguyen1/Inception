@@ -20,10 +20,16 @@ RUN apk update && apk add --no-cache \
     php82-simplexml \
     curl \
     wget \
-    mariadb-client
+    mariadb-client \
+    netcat-openbsd
 
-# Create directory for php configuration
-RUN mkdir -p /etc/php82/conf.d/
+# Create necessary directories
+RUN mkdir -p /etc/php82/conf.d/ \
+    && mkdir -p /var/log/php-fpm \
+    && mkdir -p /var/lib/php/session \
+    && mkdir -p /var/lib/php/upload_tmp \
+    && chown -R nobody:nobody /var/log/php-fpm \
+    && chown -R nobody:nobody /var/lib/php
 
 # Create custom php.ini with increased memory limit
 RUN echo "memory_limit = 256M" > /etc/php82/conf.d/99-memory.ini
@@ -42,6 +48,9 @@ COPY ./conf/www.conf /etc/php82/php-fpm.d/www.conf
 # WordPress setup script
 COPY ./tools/setup.sh /setup.sh
 RUN chmod +x /setup.sh
+
+# Create webroot directory
+RUN mkdir -p /var/www/html && chown -R nobody:nobody /var/www/html
 
 WORKDIR /var/www/html
 

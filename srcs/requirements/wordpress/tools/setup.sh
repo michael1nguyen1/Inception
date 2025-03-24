@@ -35,6 +35,9 @@ done
 
 echo "Setting up WordPress..."
 
+# Ensure proper ownership of web directory
+chown -R nobody:nobody /var/www/html
+
 # Check if WordPress is already installed
 if [ ! -f "wp-config.php" ]; then
     echo "Installing WordPress..."
@@ -68,6 +71,13 @@ else
     echo "WordPress already installed."
 fi
 
+# Double-check permissions after WordPress setup
+chown -R nobody:nobody /var/www/html
+
 echo "Starting PHP-FPM..."
+# Show PHP version and loaded modules for debugging
+php -v
+php -m
+
 # Start PHP-FPM
-exec php-fpm82 -F
+exec php-fpm82 -F -R

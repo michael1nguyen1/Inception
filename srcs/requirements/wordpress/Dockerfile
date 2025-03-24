@@ -14,6 +14,7 @@ RUN apk update && apk add --no-cache \
     php82-xml \
     php82-zip \
     php82-gd \
+    php82-phar \
     curl \
     wget \
     mariadb-client

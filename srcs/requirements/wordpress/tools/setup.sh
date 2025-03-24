@@ -11,7 +11,7 @@ done
 
 # Give MariaDB extra time to initialize fully
 echo "MariaDB is reachable. Waiting for initialization to complete..."
-sleep 15
+sleep 5
 
 # Test connection to make sure it's actually working
 echo "Testing database connection..."
@@ -39,11 +39,8 @@ echo "Setting up WordPress..."
 if [ ! -f "wp-config.php" ]; then
     echo "Installing WordPress..."
     
-    # Download WordPress manually instead of using wp-cli for this step
-    wget https://wordpress.org/latest.tar.gz
-    tar -xzf latest.tar.gz
-    mv wordpress/* .
-    rm -rf wordpress latest.tar.gz
+    # Download WordPress with increased memory limit
+    php -d memory_limit=512M /usr/local/bin/wp core download --allow-root
     
     # Create configuration
     wp config create --dbname=${MYSQL_DATABASE} \

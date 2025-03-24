@@ -22,11 +22,14 @@ RUN apk update && apk add --no-cache \
     wget \
     mariadb-client
 
+# Create directory for php configuration
+RUN mkdir -p /etc/php82/conf.d/
+
+# Create custom php.ini with increased memory limit
+RUN echo "memory_limit = 256M" > /etc/php82/conf.d/99-memory.ini
+
 # Create a symlink from php82 to php for wp-cli
 RUN ln -sf /usr/bin/php82 /usr/bin/php
-
-# Increase PHP memory limit
-RUN sed -i 's/memory_limit = .*/memory_limit = 256M/' /etc/php82/php.ini
 
 # Install wp-cli
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \

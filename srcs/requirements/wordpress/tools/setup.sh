@@ -2,15 +2,16 @@
 
 echo "Starting WordPress setup..."
 
-# Wait for MariaDB to be available
-echo "Waiting for MariaDB service to be accessible..."
+# Wait for MariaDB to be available at network level
+echo "Waiting for MariaDB to be accessible..."
 until nc -z mariadb 3306; do
+    echo "Waiting for MariaDB service..."
     sleep 2
 done
 
-# Give MariaDB time to initialize fully
-echo "MariaDB service detected, waiting for initialization to complete..."
-sleep 10
+# Give MariaDB extra time to initialize fully
+echo "MariaDB is reachable. Waiting for initialization to complete..."
+sleep 15
 
 echo "Setting up WordPress..."
 
@@ -27,9 +28,6 @@ if [ ! -f "wp-config.php" ]; then
                      --dbpass=${MYSQL_PASSWORD} \
                      --dbhost=${WORDPRESS_DB_HOST} \
                      --allow-root
-    
-    # Wait a bit more to ensure database is ready
-    sleep 5
     
     # Install WordPress
     wp core install --url=${DOMAIN_NAME} \

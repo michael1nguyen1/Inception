@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # Check if the database directory is empty
 if [ ! -d "/var/lib/mysql/mysql" ]; then
     echo "Initializing MariaDB data directory..."
@@ -16,14 +14,13 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
         sleep 1
     done
     
-    # Configure MariaDB
-    mysql -u root << EOF
-CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
-CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
-GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';
-ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
-FLUSH PRIVILEGES;
-EOF
+    # Run any SQL scripts from /docker-entrypoint-initdb.d
+    for f in /docker-entrypoint-initdb.d/*; do
+        case "$f" in
+            *.sql)    echo "Running SQL script $f"; mysql < "$f" ;;
+            *)        echo "Ignoring $f" ;;
+        esac
+    done
     
     # Shutdown the temporary MariaDB server
     mysqladmin -u root shutdown

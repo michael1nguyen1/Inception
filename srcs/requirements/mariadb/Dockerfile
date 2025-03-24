@@ -14,7 +14,12 @@ RUN mkdir -p /run/mysqld && \
 COPY ./conf/my.cnf /etc/my.cnf
 COPY ./tools/setup.sh /setup.sh
 
+# Make the script executable
 RUN chmod +x /setup.sh
+
+# Create a directory for initialization scripts
+RUN mkdir -p /docker-entrypoint-initdb.d
+COPY ./tools/init-db.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 3306
 

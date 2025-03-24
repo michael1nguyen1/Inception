@@ -39,8 +39,11 @@ echo "Setting up WordPress..."
 if [ ! -f "wp-config.php" ]; then
     echo "Installing WordPress..."
     
-    # Download WordPress
-    wp core download --allow-root
+    # Download WordPress manually instead of using wp-cli for this step
+    wget https://wordpress.org/latest.tar.gz
+    tar -xzf latest.tar.gz
+    mv wordpress/* .
+    rm -rf wordpress latest.tar.gz
     
     # Create configuration
     wp config create --dbname=${MYSQL_DATABASE} \

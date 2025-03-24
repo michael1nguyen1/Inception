@@ -15,12 +15,18 @@ RUN apk update && apk add --no-cache \
     php82-zip \
     php82-gd \
     php82-phar \
+    php82-json \
+    php82-tokenizer \
+    php82-simplexml \
     curl \
     wget \
     mariadb-client
 
 # Create a symlink from php82 to php for wp-cli
 RUN ln -sf /usr/bin/php82 /usr/bin/php
+
+# Increase PHP memory limit
+RUN sed -i 's/memory_limit = .*/memory_limit = 256M/' /etc/php82/php.ini
 
 # Install wp-cli
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \

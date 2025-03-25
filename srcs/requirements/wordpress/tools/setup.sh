@@ -35,21 +35,29 @@ done
 
 echo "Setting up WordPress..."
 
+# Create webroot directory if it doesn't exist
+mkdir -p /var/www/html
+
 # Ensure proper ownership of web directory
 chown -R nobody:nobody /var/www/html
+cd /var/www/html
 
 # Check if WordPress is already installed
-if [ ! -f "wp-config.php" ]; then
+if [ ! -f "/var/www/html/wp-config.php" ]; then
     echo "Installing WordPress..."
     
+    # Clean the directory if needed
+    rm -rf /var/www/html/*
+    
     # Download WordPress with increased memory limit
-    php -d memory_limit=512M /usr/local/bin/wp core download --allow-root
+    wp core download --allow-root --path=/var/www/html
     
     # Create configuration
     wp config create --dbname=${MYSQL_DATABASE} \
                      --dbuser=${MYSQL_USER} \
                      --dbpass=${MYSQL_PASSWORD} \
                      --dbhost=${WORDPRESS_DB_HOST} \
+                     --path=/var/www/html \
                      --allow-root
     
     # Install WordPress
@@ -58,12 +66,14 @@ if [ ! -f "wp-config.php" ]; then
                     --admin_user=${WP_ADMIN_USER} \
                     --admin_password=${WP_ADMIN_PASSWORD} \
                     --admin_email=${WP_ADMIN_EMAIL} \
+                    --path=/var/www/html \
                     --allow-root
     
     # Create a regular user
     wp user create ${WP_USER} ${WP_USER_EMAIL} \
                    --user_pass=${WP_USER_PASSWORD} \
                    --role=author \
+                   --path=/var/www/html \
                    --allow-root
     
     echo "WordPress installed successfully!"
@@ -72,7 +82,14 @@ else
 fi
 
 # Double-check permissions after WordPress setup
+find /var/www/html -type d -exec chmod 755 {} \;
+find /var/www/html -type f -exec chmod 644 {} \;
 chown -R nobody:nobody /var/www/html
+
+# Create a test file to confirm NGINX can access files
+echo "<h1>WordPress is installed!</h1>" > /var/www/html/test.html
+chown nobody:nobody /var/www/html/test.html
+chmod 644 /var/www/html/test.html
 
 echo "Starting PHP-FPM..."
 # Show PHP version and loaded modules for debugging

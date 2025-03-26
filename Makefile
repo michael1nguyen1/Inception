@@ -23,7 +23,7 @@ re: fclean up
 logs:
 	docker-compose -f srcs/docker-compose.yml logs -f
 
-	help:
+help:
 	@echo "=============================================================================="
 	@echo "                    INCEPTION PROJECT HELPER COMMANDS                         "
 	@echo "=============================================================================="
@@ -52,6 +52,7 @@ logs:
 	@echo "  docker exec -it wordpress wp user list --allow-root           - List WordPress users"
 	@echo "  docker exec -it wordpress wp user update USER --user_pass=NEWPASS --allow-root - Change password"
 	@echo "  docker exec -it wordpress wp plugin list --allow-root         - List installed plugins"
+	@echo "  docker exec -it wordpress env | grep PASSWORD				 - View WordPress database password"
 	@echo ""
 	@echo "NGINX/SSL COMMANDS:"
 	@echo "  docker exec -it nginx nginx -t        - Test NGINX configuration"

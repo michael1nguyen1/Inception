@@ -60,16 +60,30 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
                      --path=/var/www/html \
                      --allow-root
     
-    # Install WordPress
+    # Debugging information
+    echo "WordPress Configuration:"
+    echo "DB Name: ${MYSQL_DATABASE}"
+    echo "DB User: ${MYSQL_USER}" 
+    echo "DB Host: ${WORDPRESS_DB_HOST}"
+    echo "Domain: ${DOMAIN_NAME}"
+    
+    # Install WordPress with more verbose output
+    echo "Installing WordPress core with admin user: ${WP_ADMIN_USER}, email: ${WP_ADMIN_EMAIL}"
     wp core install --url=${DOMAIN_NAME} \
                     --title="Inception WordPress" \
                     --admin_user=${WP_ADMIN_USER} \
                     --admin_password=${WP_ADMIN_PASSWORD} \
                     --admin_email=${WP_ADMIN_EMAIL} \
                     --path=/var/www/html \
-                    --allow-root
+                    --allow-root \
+                    --debug
     
-    # Create a regular user
+    # Verify the admin user was created
+    echo "Verifying admin user creation:"
+    wp user list --field=user_login --role=administrator --allow-root
+    
+    # Create a regular user with more verbose output
+    echo "Creating regular user: ${WP_USER}, email: ${WP_USER_EMAIL}"
     wp user create ${WP_USER} ${WP_USER_EMAIL} \
                    --user_pass=${WP_USER_PASSWORD} \
                    --role=author \
@@ -78,7 +92,20 @@ if [ ! -f "/var/www/html/wp-config.php" ]; then
     
     echo "WordPress installed successfully!"
 else
-    echo "WordPress already installed."
+    echo "WordPress already installed. Verifying admin user..."
+    
+    # Check if the admin user exists and update password if needed
+    if wp user get ${WP_ADMIN_USER} --allow-root --path=/var/www/html >/dev/null 2>&1; then
+        echo "Admin user exists. Ensuring password is correct..."
+        wp user update ${WP_ADMIN_USER} --user_pass=${WP_ADMIN_PASSWORD} --allow-root --path=/var/www/html
+    else
+        echo "Admin user does not exist. Creating..."
+        wp user create ${WP_ADMIN_USER} ${WP_ADMIN_EMAIL} \
+                       --user_pass=${WP_ADMIN_PASSWORD} \
+                       --role=administrator \
+                       --path=/var/www/html \
+                       --allow-root
+    fi
 fi
 
 # Double-check permissions after WordPress setup

@@ -68,4 +68,5 @@ help:
 	@echo "  docker network ls                     - List all Docker networks"
 	@echo "  docker network inspect inception_network - View network details and connected containers"
 	@echo ""
+	@echo "scp -r -P 2828 folder michael@localhost:/home/michael/ - Transfer files to VM"
 	@echo "=============================================================================="

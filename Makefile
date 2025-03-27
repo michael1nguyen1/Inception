@@ -15,9 +15,9 @@ clean: down
 
 fclean: clean
 	docker-compose -f srcs/docker-compose.yml down -v
-    docker system prune -a --force
-    rm -rf /home/$(shell whoami)/data/wordpress/*
-    rm -rf /home/$(shell whoami)/data/mariadb/*
+	docker system prune -a --force
+	rm -rf /home/$(shell whoami)/data/wordpress/*
+	rm -rf /home/$(shell whoami)/data/mariadb/*
 
 re: fclean up
 
